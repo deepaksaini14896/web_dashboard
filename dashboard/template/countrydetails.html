@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Flag sprites service provided by Martijn Lafeber, https://github.com/lafeber/world-flags-sprite/blob/master/LICENSE -->
+    <link rel="stylesheet" type="text/css" href="//github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+
+<style type="text/css">
+.Row {
+    display: table;
+    width: 100%; /*Optional*/
+    table-layout: fixed; /*Optional*/
+    border-spacing: 10px; /*Optional*/
+}
+.Column {
+    display: table-cell;
+}
+</style>
+<body>
+    <h1 style="text-align: center;">COVID-19 Coronavirus Pandemic</h1>
+    <div class="Row">
+        <div class="Column">
+            <h2 style="text-align: center; color: #33CCFF">Coronavirus Cases Graph of {{countryname}}</h2>
+        </div>
+        <div class="Column">
+            <h2 style="text-align: center; color: #8ACA2B">Recovered Graph of {{countryname}}</h2>
+        </div>
+        <div class="Column">
+            <h2 style="text-align: center; color: red">Deaths Graph of {{countryname}}</h2>
+        </div>
+    </div>
+	<div class="Row">
+        <div class="Column">
+            <canvas id="totalCases"></canvas>
+        </div>
+        <div class="Column">
+            <canvas id="totalRecover"></canvas>
+        </div>
+        <div class="Column">
+            <canvas id="totalDeath"></canvas>
+        </div>
+    </div>
+</body>
+<script>
+	var ctx = document.getElementById('totalCases').getContext('2d');
+	var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: {{labels|safe}},
+        datasets: [{
+            label: 'Total Coronavirus Cases in the '+'{{countryname}}',
+            backgroundColor: 'transparent',
+            borderColor: '#33CCFF',
+            data: {{data_cases|safe}}
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
+<script type="text/javascript">
+	var ctx = document.getElementById('totalRecover').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: {{labels|safe}},
+        datasets: [{
+            label: 'Total Coronavirus Recoveres in the '+'{{countryname}}',
+            backgroundColor: 'transparent',
+            borderColor: '#8ACA2B',
+            data: {{data_recoveres|safe}}
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
+<script type="text/javascript">
+	var ctx = document.getElementById('totalDeath').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: {{labels|safe}},
+        datasets: [{
+            label: 'Total Coronavirus Deaths in the {{countryname}}',
+            backgroundColor: 'transparent',
+            borderColor: 'red',
+            data: {{data_deaths|safe}}
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
+</html>

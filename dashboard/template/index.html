@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home</title>
+</head>
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/data.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+
+<!-- Flag sprites service provided by Martijn Lafeber, https://github.com/lafeber/world-flags-sprite/blob/master/LICENSE -->
+<link rel="stylesheet" type="text/css" href="//github.com/downloads/lafeber/world-flags-sprite/flags32.css">
+<style type="text/css">
+.Row {
+    display: table;
+    width: 100%; /*Optional*/
+    table-layout: fixed; /*Optional*/
+    border-spacing: 15px; /*Optional*/
+}
+.Column {
+    display: table-cell;
+}
+</style>
+
+
+<body>
+	<h1 style="text-align: center;">COVID-19 Coronavirus Pandemic</h1>
+	<marquee><small>Last date of update: {{lastupdate}}</small></marquee>
+  <div class="Row">
+    <div class="Column">
+      <h2 style="text-align: center; color: #33CCFF">Coronavirus Cases: {{totalcases}}</h2>
+    </div>
+    <div class="Column">
+	    <h2 style="text-align: center; color: #8ACA2B">Recovered: {{totalrecover}}</h2>
+    </div>
+    <div class="Column">
+      <h2 style="text-align: center; color: red">Deaths: {{totaldeath}}</h2>
+    </div>
+  </div>
+    
+  <div>
+        <div class="col-lg-3" style="float: left; max-height: 650px;max-width: 350px; overflow: scroll;">
+            <!--<canvas id="myChart" style="width: 300px; height: 6500px;"></canvas>-->
+            <table>
+                <tr>
+                    <th>Cases by Country/Region</th>
+                </tr>
+                <form method="post" action="CountryUpdates/">
+                    {% csrf_token %}    
+                    {% for i,j in barcountry %}
+                        <tr>
+                            <td>
+                                <button type="submit" value="{{i}}" name="countryname" style="width: 85%; height: 40px; font-size: 20px;">
+                                    {{j}}&nbsp;{{i}}
+                                </button> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </form>
+            </table>
+        </div>
+        <div class="col-lg-6" style="float: center;">
+                <br>
+                <br>
+                <div id="container" style="height: 650px; width: 800px;"></div>
+        </div>    
+    </div>
+</body>
+<script>
+    var data2={{dataformap|safe}};
+    Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json', function (data) {
+
+  // Prevent logarithmic errors in color calulcation
+  data.forEach(function (p) {
+    p.value = (p.value < 1 ? 1 : p.value);
+  });
+
+  // Initiate the chart
+  Highcharts.mapChart('container', {
+
+    chart: {
+      map: 'custom/world'
+    },
+
+    title: {
+      text: 'Map of cases'
+    },
+
+    legend: {
+        title: {
+            text: 'Infected Population',
+            style: {
+                color: ( // theme
+                    Highcharts.defaultOptions &&
+                    Highcharts.defaultOptions.legend &&
+                    Highcharts.defaultOptions.legend.title &&
+                    Highcharts.defaultOptions.legend.title.style &&
+                    Highcharts.defaultOptions.legend.title.style.color
+                ) || 'black'
+            }
+        }
+    },
+
+    mapNavigation: {
+      enabled: true,
+      buttonOptions: {
+        verticalAlign: 'bottom'
+      }
+    },
+
+    tooltip: {
+      backgroundColor: 'none',
+      borderWidth: 0,
+      shadow: false,
+      useHTML: true,
+      padding: 0,
+      pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
+        '</span></span> {point.name}<br>' +
+        '<span style="font-size:30px">{point.value}</span>',
+      positioner: function () {
+        return { x: 0, y: 250 };
+      }
+    },
+
+    colorAxis: {
+      min: 1,
+      max: {{maxrange}},
+      type: 'logarithmic'
+    },
+
+    series: [{
+      data: data2,
+      joinBy: ['iso-a3', 'code3'],
+      name: 'Total Cases',
+      states: {
+        hover: {
+          color: '#a4edba'
+        }
+      }
+    }]
+  });
+});
+</script>
+
+</html>
