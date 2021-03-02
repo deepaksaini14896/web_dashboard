@@ -12,7 +12,7 @@ node {
 
         stage 'Test'
             sh 'pip3 install -r requirements.txt'
-            sh './dashboard/python3 manage.py test --testrunner=dashboard.tests.test_cases.NoDbTestRunner'
+            sh 'python3 ./dashboard/manage.py test --testrunner=dashboard.tests.test_cases.NoDbTestRunner'
 
         stage 'Deploy'
             sh './deployment_script.sh'
