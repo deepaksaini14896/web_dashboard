@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cd web_dashboard
 git pull origin master
 pip3 install -r requirements.txt
 python3 ./dashboard/manage.py migrate
