@@ -15,7 +15,7 @@ node {
             sh 'python3 ./dashboard/manage.py test --testrunner=dashboard.tests.test_cases.NoDbTestRunner'
 
         stage 'Deploy'
-            sh 'git pull'
+            sh 'git pull origin master'
             sh 'git pull origin master'
             sh './deployment_script.sh'
 
