@@ -1,7 +1,7 @@
 #!/bin/sh
 
-git fetch --all
+sudo systemctl stop supervisor
 git pull origin master
 pip3 install -r requirements.txt
 python3 ./dashboard/manage.py migrate
-sudo supervisorctl restart web_dashboard
+sudo systemctl start supervisor
